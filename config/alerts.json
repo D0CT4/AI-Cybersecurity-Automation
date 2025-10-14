@@ -1,0 +1,40 @@
+{
+  "alertRules": [
+    {
+      "name": "Unauthorized Access Attempt",
+      "severity": "high",
+      "condition": "event.type === 'login' && event.success === false && event.source === 'external'",
+      "notifications": {
+        "email": true,
+        "webhook": true
+      }
+    },
+    {
+      "name": "Malware Detected",
+      "severity": "critical",
+      "condition": "event.type === 'malware' && event.status === 'detected'",
+      "notifications": {
+        "email": true,
+        "webhook": true
+      }
+    },
+    {
+      "name": "Suspicious File Upload",
+      "severity": "medium",
+      "condition": "event.type === 'file_upload' && event.fileType === 'executable'",
+      "notifications": {
+        "email": false,
+        "webhook": true
+      }
+    },
+    {
+      "name": "Multiple Failed Logins",
+      "severity": "low",
+      "condition": "event.type === 'login' && event.success === false && event.count > 5",
+      "notifications": {
+        "email": false,
+        "webhook": false
+      }
+    }
+  ]
+}

@@ -1,24 +1,78 @@
+
 # AI-Cybersecurity-Automation
 
-## Project Goal
+## Automated Alerting System Architecture
 
-An open-source automated threat detection system designed specifically for small and medium-sized businesses (SMBs) and startups. This project aims to democratize enterprise-level cybersecurity by providing accessible, intelligent, and automated security monitoring tools.
+The Automated Alerting System is designed to provide real-time detection, notification, and management of cybersecurity threats for SMBs and startups. The system is modular, extensible, and easy to deploy.
 
-## Key Pain Points Addressed
+### Architecture Overview
 
-- **Limited Security Budgets**: Most SMBs and startups cannot afford expensive enterprise security solutions or dedicated security teams
-- **Resource Constraints**: Small teams lack the time and expertise to continuously monitor security threats
-- **Alert Fatigue**: Manual security monitoring generates overwhelming amounts of data without actionable insights
-- **Reactive vs. Proactive**: Many small businesses only address security after an incident occurs
-- **Complex Setup**: Enterprise security tools often require extensive configuration and specialized knowledge
+```
+┌─────────────┐      ┌─────────────┐      ┌─────────────┐      ┌─────────────┐
+│  Data/Event │ ──▶ │ Alert Engine│ ──▶ │ Notification│ ──▶ │ Dashboard UI │
+└─────────────┘      └─────────────┘      └─────────────┘      └─────────────┘
+```
 
-## Value Proposition
+- **Alert Engine**: Central logic for evaluating incoming events against configurable alert rules (`config/alerts.json`).
+- **Notification System**: Sends outbound notifications via email (`notifications/mailer.js`) and webhooks (`notifications/webhook.js`).
+- **REST API**: Exposes endpoints for alert management (`routes/api.js`).
+- **Dashboard UI**: React-based frontend for monitoring and managing alerts (`frontend/dashboard.jsx`).
 
-AI-Cybersecurity-Automation bridges the critical security gap for resource-constrained organizations by leveraging artificial intelligence and machine learning to automatically detect, analyze, and respond to cybersecurity threats in real-time. Our solution eliminates the need for expensive security teams while providing enterprise-grade protection through intelligent automation, intuitive dashboards, and actionable alerts. By making advanced threat detection accessible and affordable, we empower SMBs and startups to proactively protect their digital assets without compromising on security quality or breaking their budget.
+### Key Features
 
-## Getting Started
+- Configurable alert rules with severity, conditions, and notification settings
+- Real-time alert evaluation and storage
+- REST API for alert retrieval, creation, and updates
+- Email and webhook notifications for new alerts
+- Interactive dashboard for alert management (resolve, acknowledge, ignore)
 
-Coming soon! We're actively building the initial features and welcome contributions from the community.
+## Step-by-Step Usage Instructions
+
+### 1. Install Dependencies
+
+```
+npm install express nodemailer node-fetch react
+```
+
+### 2. Configure Alert Rules
+
+Edit `config/alerts.json` to define custom alert rules, severity levels, and notification preferences.
+
+### 3. Set Up Notification Settings
+
+- **Email**: Set SMTP credentials via environment variables:
+	- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `ALERT_FROM`, `ALERT_TO`
+- **Webhook**: Set webhook endpoint via `WEBHOOK_URL` environment variable.
+
+### 4. Start the Backend Server
+
+Create an Express app and mount the API routes:
+
+```js
+const express = require('express');
+const apiRoutes = require('./routes/api');
+const app = express();
+app.use(express.json());
+app.use('/api', apiRoutes);
+app.listen(3000, () => console.log('Server running on port 3000'));
+```
+
+### 5. Launch the Frontend Dashboard
+
+Integrate `frontend/dashboard.jsx` into your React app. The dashboard will fetch and display alerts, allowing you to resolve, acknowledge, or ignore them.
+
+### 6. Trigger Alerts
+
+Alerts are triggered automatically based on incoming events and configured rules. You can also manually add alerts via the API:
+
+```bash
+curl -X POST http://localhost:3000/api/alerts -H 'Content-Type: application/json' -d '{"message":"Test alert","severity":"high"}'
+```
+
+### 7. Manage Alerts
+
+- View all alerts: `GET /api/alerts`
+- Update alert status: `PATCH /api/alerts/:id`
 
 ## Contributing
 
